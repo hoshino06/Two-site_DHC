@@ -1,0 +1,53 @@
+% twosite.m 
+clear
+
+%% simulink モデルの呼び出し
+addpath('../simulator')
+open_system('twosite_system_open_loop')
+
+%% シミュレーション設定
+% サンプリング時間および予測ホライズン
+set_param('twosite_system/mpc', 'Tstep', '2.0')
+set_param('twosite_system/mpc', 'Nhorizon', '5')
+
+% 電力の指令値に関する設定
+set_param('twosite_system/power_ref','Pnominal', '1.0')
+set_param('twosite_system/power_ref','ASamplitude','0.4')
+
+% 熱の指令値に関する設定
+NominalHref = '1.68667';
+set_param('twosite_system/HeatRef', 'Value', NominalHref)
+
+% 計算の時間
+set_param('twosite_system','StartTime','-180', 'StopTime','60*40')
+
+%% シミュレーションの実行
+% 0.0
+% set_param('twosite_system/power_ref','ASamplitude','0.0')
+% res = sim('twosite_system');
+% T = array2table(res.tout, 'VariableNames',{'time'} );
+% T = join(T, array2table(res.power,    'VariableNames',{'time','regd','power'}) );
+% T = join(T, array2table(res.heatflow, 'VariableNames',{'time','heatflow'}) );
+% T = join(T, array2table(res.pressure, 'VariableNames',{'time','pressure'}) );
+% T = join(T, array2table(res.inputs,   'VariableNames',{'time','in1','in2'}) );
+% writetable(T, 'simex1_pdel00.csv')
+% 
+% % 0.2
+% set_param('twosite_system/power_ref','ASamplitude','0.2')
+% res = sim('twosite_system');
+% T = array2table(res.tout, 'VariableNames',{'time'} );
+% T = join(T, array2table(res.power,    'VariableNames',{'time','regd','power'}) );
+% T = join(T, array2table(res.heatflow, 'VariableNames',{'time','heatflow'}) );
+% T = join(T, array2table(res.pressure, 'VariableNames',{'time','pressure'}) );
+% T = join(T, array2table(res.inputs,   'VariableNames',{'time','in1','in2'}) );
+% writetable(T, 'simex1_pdel02.csv')
+
+% 0.4
+set_param('twosite_system/power_ref','ASamplitude','0.4')
+res = sim('twosite_system');
+T = array2table(res.tout, 'VariableNames',{'time'} );
+T = join(T, array2table(res.power,    'VariableNames',{'time','regd','power'}) );
+T = join(T, array2table(res.heatflow, 'VariableNames',{'time','heatflow'}) );
+T = join(T, array2table(res.pressure, 'VariableNames',{'time','pressure'}) );
+T = join(T, array2table(res.inputs,   'VariableNames',{'time','in1','in2'}) );
+writetable(T, 'open_loo.csv')
